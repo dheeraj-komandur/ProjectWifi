@@ -2,10 +2,14 @@ package com.dheeraj.projectwifi;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,7 +20,9 @@ TextView textView;
 Button button;
 WifiManager wifiManager;
 WifiInfo connection;
-String valid = "00:1e:a6:96:8c:e8";
+    NetworkInfo info ;
+    String valid = "00:1e:a6:96:8c:e8";
+    String ssid,bssid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,13 +33,36 @@ String valid = "00:1e:a6:96:8c:e8";
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                /*
                 wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 connection = wifiManager.getConnectionInfo();
                 String getBssid = connection.getBSSID();
-                //Toast.makeText(MainActivity.this, "SSID"+connection.getSSID()+"Bssid"+connection.getBSSID(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this," Bssid"+connection.getBSSID(), Toast.LENGTH_SHORT).show();
+                */
 
-                if(valid.equals(getBssid))
+
+                ConnectivityManager connManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (networkInfo.isConnected()) {
+                    final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                    if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
+                        ssid = connectionInfo.getSSID();
+                        bssid = connectionInfo.getBSSID();
+                    }
+                }
+
+
+               // Toast.makeText(MainActivity.this, bssid + ssid, Toast.LENGTH_SHORT).show();
+
+
+
+
+                if(valid.equals(bssid))
                 {
+                    Toast.makeText(MainActivity.this, "Valid Network", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this,wificonnected.class);
                     startActivity(intent);
                 }
@@ -41,6 +70,7 @@ String valid = "00:1e:a6:96:8c:e8";
                 {
                     Toast.makeText(MainActivity.this, "Connected to Different network ", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 

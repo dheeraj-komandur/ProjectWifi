@@ -105,13 +105,13 @@ public class wificonnected extends AppCompatActivity {
                         }
                         else
                         {
-                            Toast.makeText(wificonnected.this, "Yss", Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(wificonnected.this, "Yss", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         };
-        timer.schedule(doAsyncTask,0,2000);
+        timer.schedule(doAsyncTask,0,4000);
 
 
     }
